@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Executive Communication Coach</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f9; color: #333; max-width: 850px; margin: 40px auto; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1, h2, h3 { margin-top: 0; color: #111; }
+        .scenario-box { background: #eef2ff; border-left: 4px solid #4f46e5; padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+        .assisted-box { background: #f0fdf4; border-left: 4px solid #16a34a; padding: 15px; margin-bottom: 20px; border-radius: 0 8px 8px 0; }
+        textarea { width: 100%; padding: 10px; font-family: inherit; font-size: 15px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; box-sizing: border-box; margin-top: 10px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        button { background: #4f46e5; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #4338ca; }
+        .secondary-btn { background: #e5e7eb; color: #374151; font-size: 14px; padding: 8px 16px; }
+        .secondary-btn:hover { background: #d1d5db; }
+        #stopBtn { background: #dc2626; display: none; }
+        #stopBtn:hover { background: #b91c1c; }
+        .status { margin-top: 15px; font-weight: bold; color: #666; }
+        .feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .feedback-item { padding: 15px; border-radius: 8px; }
+        .keep { background: #dcfce7; border: 1px solid #bbf7d0; }
+        .change { background: #fee2e2; border: 1px solid #fecaca; }
+        .try { background: #fef9c3; border: 1px solid #fef08a; }
+        .tone-card { background: #f3e8ff; border: 1px solid #e9d5ff; }
+        .articulation-card { background: #e0f2fe; border: 1px solid #bae6fd; }
+        .metrics { display: flex; gap: 20px; font-size: 14px; color: #555; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+        .hidden { display: none; }
+        
+        /* Dashboard Styles */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; align-items: center; }
+        .score-circle { background: #eef2ff; border: 4px solid #4f46e5; width: 120px; height: 120px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto; }
+        .score-number { font-size: 32px; font-weight: bold; color: #4f46e5; }
+        .score-label { font-size: 12px; color: #666; text-transform: uppercase; }
+        .habit-list { background: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 6px; margin-top: 15px; }
+        .history-item { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .history-item p { margin: 5px 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Performance Dashboard</h2>
+        <div class="dashboard-grid">
+            <div>
+                <div class="score-circle">
+                    <span id="overallScoreDisplay" class="score-number">--</span>
+                    <span class="score-label">Score / 100</span>
+                </div>
+            </div>
+            <div>
+                <p><strong>Recent Trend Averages:</strong></p>
+                <div style="font-size: 14px; color: #555; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>Avg Clarity: <span id="avgClarity">--</span>/20</div>
+                    <div>Avg Brevity: <span id="avgBrevity">--</span>/20</div>
+                    <div>Avg BLUF: <span id="avgBluf">--</span>/5</div>
+                    <div>Avg Fillers: <span id="avgFillers">--</span>%</div>
+                </div>
+                <div class="habit-list">
+                    <strong>Top Recurring Habit to Break:</strong>
+                    <div id="topHabit" style="font-size: 13px; color: #b45309; margin-top: 4px;">None recorded yet. Complete an attempt!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+        <h2>30-Day Coaching Program</h2>
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div>
+                <label for="daySelect"><strong>Select Day:</strong></label>
+                <select id="daySelect" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; margin-left: 5px;">
+                    </select>
+            </div>
+            <div id="dayThemeBadge" style="background: #eef2ff; color: #4f46e5; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;">
+                Week 1: Clarity
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h1>Executive Communication Coach</h1>
+            <button id="modeToggleBtn" class="secondary-btn" style="background: #e0e7ff; color: #3730a3; font-weight: bold;">Mode: Non-Assisted (Free Practice)</button>
+        </div>
+        
+        <div class="scenario-box">
+            <strong>Active Scenario:</strong>
+            <textarea id="scenarioInput" rows="3">A senior stakeholder wants to cut your project's budget by 20%. Defend the current budget by explaining the ROI impact.</textarea>
+            <div class="btn-group">
+                <button id="generateScenarioBtn" class="secondary-btn">🎲 Generate Random AI Scenario</button>
+            </div>
+        </div>
+
+        <div id="assistedContainer" class="assisted-box hidden">
+            <strong>Assisted Teleprompter Script (Read Aloud):</strong>
+            <p id="assistedScriptText" style="color: #166534; font-size: 15px; line-height: 1.5; margin-top: 8px; font-style: italic;">Loading assisted script...</p>
+        </div>
+
+        <button id="recordBtn">Start Recording</button>
+        <button id="stopBtn">Stop & Analyze</button>
+        <div id="status" class="status">Ready to practice.</div>
+    </div>
+
+    <div id="resultsCard" class="card hidden">
+        <h2>Latest Feedback</h2>
+        
+        <div class="metrics">
+            <span id="metricTime"><strong>Duration:</strong> -- sec</span>
+            <span id="metricWPM"><strong>Pace:</strong> -- WPM</span>
+            <span id="metricFillers"><strong>Fillers:</strong> -- %</span>
+            <span id="metricBLUF"><strong>BLUF Score:</strong> -- /5</span>
+            <span id="metricTone"><strong>Tone Score:</strong> -- /10</span>
+            <span id="metricArticulation"><strong>Articulation:</strong> -- /10</span>
+        </div>
+
+        <div>
+            <strong>Transcript:</strong>
+            <p id="transcriptText" style="color: #666; font-style: italic;"></p>
+        </div>
+
+        <div class="feedback-grid">
+            <div class="feedback-item keep">
+                <strong>Keep:</strong>
+                <p id="fbKeep">--</p>
+            </div>
+            <div class="feedback-item change">
+                <strong>Change:</strong>
+                <p id="fbChange">--</p>
+            </div>
+            <div class="feedback-item try">
+                <strong>Try Next:</strong>
+                <p id="fbTry">--</p>
+            </div>
+            <div class="feedback-item tone-card">
+                <strong>Tone & Presence:</strong>
+                <p id="fbTone">--</p>
+            </div>
+            <div class="feedback-item articulation-card" style="grid-column: span 2;">
+                <strong>Verbal Articulation & Flow:</strong>
+                <p id="fbArticulation">--</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <button id="historyBtn" class="secondary-btn" style="width: 100%;">Show Practice History ▼</button>
+        <div id="historyContainer" class="hidden" style="margin-top: 20px;">
+            <p style="color:#666;">No past attempts yet. Record your first response!</p>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let attemptHistory = [];
+        let isAssistedMode = false;
+
+        const daySelect = document.getElementById('daySelect');
+        const dayThemeBadge = document.getElementById('dayThemeBadge');
+        const modeToggleBtn = document.getElementById('modeToggleBtn');
+        const assistedContainer = document.getElementById('assistedContainer');
+        const assistedScriptText = document.getElementById('assistedScriptText');
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const statusEl = document.getElementById('status');
+        const resultsCard = document.getElementById('resultsCard');
+        const scenarioInput = document.getElementById('scenarioInput');
+        const generateScenarioBtn = document.getElementById('generateScenarioBtn');
+        const historyBtn = document.getElementById('historyBtn');
+        const historyContainer = document.getElementById('historyContainer');
+
+        // Mode Toggle Listener
+        modeToggleBtn.addEventListener('click', async () => {
+            isAssistedMode = !isAssistedMode;
+            if (isAssistedMode) {
+                modeToggleBtn.innerText = "Mode: Assisted (Teleprompter Active)";
+                modeToggleBtn.style.background = "#dcfce7";
+                modeToggleBtn.style.color = "#166534";
+                assistedContainer.classList.remove('hidden');
+                await fetchAssistedScript();
+            } else {
+                modeToggleBtn.innerText = "Mode: Non-Assisted (Free Practice)";
+                modeToggleBtn.style.background = "#e0e7ff";
+                modeToggleBtn.style.color = "#3730a3";
+                assistedContainer.classList.add('hidden');
+            }
+        });
+
+        async function fetchAssistedScript() {
+            assistedScriptText.innerText = "🤖 Generating assisted script...";
+            try {
+                const formData = new FormData();
+                formData.append("scenario_text", scenarioInput.value);
+                const res = await fetch("http://127.0.0.1:8000/api/scenarios/assisted-script", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                assistedScriptText.innerText = `"${data.assisted_script}"`;
+            } catch (err) {
+                assistedScriptText.innerText = "Error loading assisted script.";
+            }
+        }
+
+        // Populate Day Selector Dropdown (Days 1 to 30)
+        for (let i = 1; i <= 30; i++) {
+            let weekNum = Math.ceil(i / 7);
+            let themeName = weekNum === 1 ? "Clarity" : weekNum === 2 ? "Brevity" : weekNum === 3 ? "Executive Sim" : "Real-World";
+            const option = document.createElement('option');
+            option.value = i;
+            option.innerText = `Day ${i} — Week ${weekNum} (${themeName})`;
+            daySelect.appendChild(option);
+        }
+
+        daySelect.addEventListener('change', async () => {
+            const dayNum = daySelect.value;
+            let weekNum = Math.ceil(dayNum / 7);
+            let themeName = weekNum === 1 ? "Clarity" : weekNum === 2 ? "Brevity" : weekNum === 3 ? "Executive Sim" : "Real-World";
+            dayThemeBadge.innerText = `Week ${weekNum}: ${themeName}`;
+
+            const historySummary = attemptHistory.map(h => h.habit).join(", ");
+            
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/api/curriculum/day/${dayNum}?performance_summary=${encodeURIComponent(historySummary)}`);
+                const data = await res.json();
+                scenarioInput.value = data.curriculum.prompt;
+                statusEl.innerText = `Loaded Day ${dayNum}: ${data.curriculum.title}`;
+                statusEl.style.color = "#4f46e5";
+
+                if (isAssistedMode) {
+                    await fetchAssistedScript();
+                }
+            } catch (err) {
+                console.error("Could not fetch curriculum day");
+            }
+        });
+
+        daySelect.dispatchEvent(new Event('change'));
+
+        generateScenarioBtn.addEventListener('click', async () => {
+            statusEl.innerText = "🤖 Gemini is crafting a unique scenario...";
+            statusEl.style.color = "#4f46e5";
+            generateScenarioBtn.disabled = true;
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/scenarios/generate", { method: "POST" });
+                if (!response.ok) throw new Error("Server error");
+                const data = await response.json();
+                
+                scenarioInput.value = data.scenario_text;
+                statusEl.innerText = "New AI-generated scenario loaded.";
+                statusEl.style.color = "#16a34a";
+
+                if (isAssistedMode) {
+                    await fetchAssistedScript();
+                }
+            } catch (error) {
+                statusEl.innerText = "Error generating scenario.";
+                statusEl.style.color = "#dc2626";
+            } finally {
+                generateScenarioBtn.disabled = false;
+            }
+        });
+
+        historyBtn.addEventListener('click', () => {
+            historyContainer.classList.toggle('hidden');
+            historyBtn.innerText = historyContainer.classList.contains('hidden') ? "Show Practice History ▼" : "Hide Practice History ▲";
+        });
+
+        recordBtn.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = sendAudioToBackend;
+                mediaRecorder.start();
+                recordBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                statusEl.innerText = "🔴 Recording... speak clearly.";
+                statusEl.style.color = "#dc2626";
+                resultsCard.classList.add('hidden');
+            } catch (err) {
+                alert("Microphone access denied or not found.");
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(t => t.stop());
+            stopBtn.style.display = 'none';
+            statusEl.innerText = "⏳ Analyzing tone, articulation, and metrics...";
+            statusEl.style.color = "#4f46e5";
+        });
+
+        async function sendAudioToBackend() {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append("audio_file", audioBlob, "attempt.webm");
+            formData.append("scenario_text", scenarioInput.value);
+
+            const historySummary = attemptHistory.map((h, i) => 
+                `Attempt ${attemptHistory.length - i}: BLUF Score ${h.bluf}/5, Fillers ${h.fillers}%, Habit: ${h.habit}`
+            ).join("; ");
+            formData.append("history_context", historySummary);
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/attempts/evaluate", { method: "POST", body: formData });
+                if (!response.ok) throw new Error("Server error");
+                const data = await response.json();
+                
+                saveToHistory(data);
+                displayResults(data);
+                updateDashboard();
+                
+                recordBtn.style.display = 'inline-block';
+                recordBtn.innerText = "Try Again (30 seconds)";
+                statusEl.innerText = "Analysis complete!";
+                statusEl.style.color = "#16a34a";
+            } catch (error) {
+                statusEl.innerText = "Error connecting to AI Coach.";
+                statusEl.style.color = "#dc2626";
+                recordBtn.style.display = 'inline-block';
+            }
+        }
+
+        function displayResults(data) {
+            document.getElementById('metricTime').innerHTML = `<strong>Duration:</strong> ${data.metrics.duration_seconds} sec`;
+            document.getElementById('metricWPM').innerHTML = `<strong>Pace:</strong> ${data.metrics.wpm} WPM`;
+            document.getElementById('metricFillers').innerHTML = `<strong>Fillers:</strong> ${data.metrics.filler_rate}%`;
+            document.getElementById('metricBLUF').innerHTML = `<strong>BLUF Score:</strong> ${data.coach_feedback.score_bluf} / 5`;
+            document.getElementById('metricTone').innerHTML = `<strong>Tone Score:</strong> ${data.coach_feedback.score_tone} / 10`;
+            document.getElementById('metricArticulation').innerHTML = `<strong>Articulation:</strong> ${data.coach_feedback.score_articulation} / 10`;
+            
+            document.getElementById('transcriptText').innerText = `"${data.transcript}"`;
+            document.getElementById('fbKeep').innerText = data.coach_feedback.feedback_keep || "Good structure.";
+            document.getElementById('fbChange').innerText = data.coach_feedback.feedback_change || "Focus on speed and clarity.";
+            document.getElementById('fbTry').innerText = data.coach_feedback.feedback_try || "State your primary conclusion first.";
+            document.getElementById('fbTone').innerText = data.coach_feedback.feedback_tone || "Maintain an authoritative, empathetic tone.";
+            document.getElementById('fbArticulation').innerText = data.coach_feedback.feedback_articulation || "Speak with steady enunciation and flow.";
+
+            resultsCard.classList.remove('hidden');
+        }
+
+        function saveToHistory(data) {
+            attemptHistory.unshift({
+                scenario: scenarioInput.value,
+                score: data.overall_score || 75,
+                clarity: data.coach_feedback.score_clarity,
+                brevity: data.coach_feedback.score_brevity,
+                bluf: data.coach_feedback.score_bluf,
+                tone: data.coach_feedback.score_tone,
+                articulation: data.coach_feedback.score_articulation,
+                fillers: data.metrics.filler_rate,
+                wpm: data.metrics.wpm,
+                habit: data.coach_feedback.identified_habit,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            renderHistory();
+        }
+
+        function updateDashboard() {
+            if (attemptHistory.length === 0) return;
+            
+            const latest = attemptHistory[0];
+            document.getElementById('overallScoreDisplay').innerText = latest.score;
+
+            const avg = (key) => (attemptHistory.reduce((acc, curr) => acc + curr[key], 0) / attemptHistory.length).toFixed(1);
+            document.getElementById('avgClarity').innerText = avg('clarity');
+            document.getElementById('avgBrevity').innerText = avg('brevity');
+            document.getElementById('avgBluf').innerText = avg('bluf');
+            document.getElementById('avgFillers').innerText = avg('fillers') + "%";
+
+            const habits = attemptHistory.map(h => h.habit);
+            const topHabit = habits.sort((a,b) => habits.filter(v => v===a).length - habits.filter(v => v===b).length).pop();
+            document.getElementById('topHabit').innerText = topHabit;
+        }
+
+        function renderHistory() {
+            if (attemptHistory.length === 0) {
+                historyContainer.innerHTML = "<p style='color:#666;'>No past attempts yet. Record your first response!</p>";
+                return;
+            }
+
+            historyContainer.innerHTML = attemptHistory.map((item, index) => `
+                <div class="history-item">
+                    <p><strong>Attempt ${attemptHistory.length - index}</strong> (${item.timestamp}) — <strong>Score: ${item.score}/100</strong></p>
+                    <p><strong>Scenario:</strong> <em>${item.scenario.substring(0, 50)}...</em></p>
+                    <p><strong>Metrics:</strong> BLUF: ${item.bluf}/5 | Tone: ${item.tone}/10 | Articulation: ${item.articulation}/10 | Fillers: ${item.fillers}%</p>
+                    <p style="color: #dc2626;"><strong>Habit spotted:</strong> ${item.habit}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
