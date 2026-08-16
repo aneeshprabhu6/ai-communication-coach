@@ -20,13 +20,43 @@ Powered locally by **faster-whisper** (CPU-optimized speech-to-text) and driven 
 
 ---
 
-## 🚀 Quickstart for End Users (No Python Required)
+## 🛠️ Developer Setup & Generating the Standalone `.exe`
 
-If you are running the pre-packaged executable release:
-1. Download the latest `main.exe` from the **Releases** tab.
-2. Download the `index.html` frontend file and place it in the same folder as `main.exe`.
-3. Double-click **`main.exe`** to start the local backend server (leave the terminal window open).
-4. Double-click **`index.html`** to open the user interface in your web browser.
+If you want to run the project from source or compile it into a standalone executable (`main.exe`) so it can run on machines without Python installed, follow these steps:
+
+### 1. Clone or Download the Repository
+Navigate to your project directory containing the `backend/` and `frontend/` folders.
+
+### 2. Install Dependencies
+Open your terminal inside the `backend/` folder and install the required Python packages:
+```bash
+pip install -r requirements.txt
+
+---
+
+Open main.py in notepad and enter your GEMINI API KEY where it says "HERE........................." 
+
+---
+
+Generate the Standalone .exe (PyInstaller)
+To bundle the FastAPI backend, Uvicorn, Whisper models, and all dependencies into a single portable executable file, run PyInstaller:
+
+Bash
+pip install pyinstaller
+pyinstaller --onefile main.py
+
+Once the build completes, PyInstaller will create a dist/ folder inside your backend/ directory.
+
+Inside dist/, you will find your compiled main.exe
+
+---
+
+Running the Application
+Move your newly generated main.exe and your index.html file into the same folder.
+
+Double-click main.exe to start the local backend server (keep the terminal window open).
+
+Double-click index.html to open the user interface in your web browser
 
 ---
 
