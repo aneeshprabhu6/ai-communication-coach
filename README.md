@@ -29,7 +29,9 @@ Navigate to your project directory containing the `backend/` and `frontend/` fol
 
 ### 2. Install Dependencies
 Open your terminal inside the `backend/` folder and install the required Python packages:
-```bash
+
+---
+
 pip install -r requirements.txt
 
 ---
@@ -65,6 +67,5 @@ Double-click index.html to open the user interface in your web browser
 If you want to run or modify the source code locally:
 
 ### 1. Clone the Repository
-```bash
-git clone [https://github.com/aneeshprabhu6/ai-communication-coach.git](https://github.com/aneeshprabhu6/ai-communication-coach.git)
-cd ai-communication-coach/backend
+git clone [https://github.com/aneeshprabhu6/ai-communication-coach.git]
+(https://github.com/aneeshprabhu6/ai-communication-coach.git)
